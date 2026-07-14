@@ -112,8 +112,8 @@ def process_clip_transcode(ts_bytes, params):
                 # 2. Crop gameplay using even constraints (65% of screen height)
                 filter_complex.append(f"[0:v]crop=2*trunc(ih*9/32):2*trunc(ih*0.65/2):(iw-2*trunc(ih*9/32))*{crop_offset_pct}/100:2*trunc(ih*0.35/4)[gameplay]")
                 
-                # 3. Use scale2ref to dynamically match facecam width to gameplay width (rw) and scale height proportionally (even)
-                filter_complex.append("[facecam_raw][gameplay]scale2ref=w=rw:h=-2[facecam][gameplay]")
+                # 3. Use scale2ref to dynamically match facecam width to gameplay width (ref_w) and scale height proportionally (even)
+                filter_complex.append("[facecam_raw][gameplay]scale2ref=w=ref_w:h=-2[facecam][gameplay]")
                 
                 # 4. Stack them vertically
                 filter_complex.append("[facecam][gameplay]vstack=inputs=2[layoutv]")
