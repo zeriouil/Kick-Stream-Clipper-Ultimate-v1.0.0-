@@ -98,7 +98,7 @@ def process_clip_transcode(ts_bytes, params):
             
             # Apply Layout Crop filter
             if layout_mode == 'vertical_crop':
-                filter_complex.append(f"[0:v]crop=ih*9/16:ih:(iw-ih*9/16)*{crop_offset_pct}/100:0[layoutv]")
+                filter_complex.append(f"[0:v]crop=2*trunc(ih*9/32):2*trunc(ih/2):(iw-2*trunc(ih*9/32))*{crop_offset_pct}/100:0[layoutv]")
                 video_input_label = "[layoutv]"
             elif layout_mode == 'split_screen':
                 fx_pct = params.get('facecam_x_pct', 10)
@@ -106,8 +106,16 @@ def process_clip_transcode(ts_bytes, params):
                 fw_pct = params.get('facecam_w_pct', 25)
                 fh_pct = params.get('facecam_h_pct', 25)
                 
-                filter_complex.append(f"[0:v]crop=iw*{fw_pct}/100:ih*{fh_pct}/100:iw*{fx_pct}/100:ih*{fy_pct}/100,scale=ih*9/16:-1[facecam]")
-                filter_complex.append(f"[0:v]crop=ih*9/16:ih:(iw-ih*9/16)*{crop_offset_pct}/100:0[gameplay]")
+                # 1. Crop facecam at coordinates
+                filter_complex.append(f"[0:v]crop=iw*{fw_pct}/100:ih*{fh_pct}/100:iw*{fx_pct}/100:ih*{fy_pct}/100[facecam_raw]")
+                
+                # 2. Crop gameplay using even constraints (65% of screen height)
+                filter_complex.append(f"[0:v]crop=2*trunc(ih*9/32):2*trunc(ih*0.65/2):(iw-2*trunc(ih*9/32))*{crop_offset_pct}/100:2*trunc(ih*0.35/4)[gameplay]")
+                
+                # 3. Use scale2ref to dynamically match facecam width to gameplay width (rw) and scale height proportionally (even)
+                filter_complex.append("[facecam_raw][gameplay]scale2ref=w=rw:h=-2[facecam][gameplay]")
+                
+                # 4. Stack them vertically
                 filter_complex.append("[facecam][gameplay]vstack=inputs=2[layoutv]")
                 video_input_label = "[layoutv]"
             else:
