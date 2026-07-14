@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Kick Stream Clipper",
+  "version": "1.0.0",
+  "description": "Intercepts Kick.com stream playlist URLs and adds a custom clipping overlay to generate MP4 clips.",
+  "permissions": [
+    "webRequest",
+    "storage",
+    "downloads"
+  ],
+  "host_permissions": [
+    "*://*.kick.com/*",
+    "*://*.cloudfront.net/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://kick.com/*",
+        "https://*.kick.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "styles.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

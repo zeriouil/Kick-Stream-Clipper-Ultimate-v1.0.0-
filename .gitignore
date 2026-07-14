@@ -1,0 +1,17 @@
+# Exclude the heavy FFmpeg binary
+ffmpeg.exe
+
+# Exclude generated video clips and HLS segment files
+clips/
+*.mp4
+*.ts
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# OS metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
