@@ -1,3 +1,4 @@
+import sys
 import json
 import urllib.request
 import urllib.parse
@@ -7,6 +8,12 @@ import tempfile
 import os
 import datetime
 from http.server import HTTPServer, BaseHTTPRequestHandler
+
+# Force UTF-8 output so Unicode characters in print() don't crash on Windows cp1252
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if hasattr(sys.stderr, 'reconfigure'):
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -270,7 +277,7 @@ def transcode_clip(ts_bytes, params):
         result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         if result.returncode == 0 and os.path.getsize(temp_out_name) > 0:
-            print(f"FFmpeg transcode successful → {temp_out_name}")
+            print(f"FFmpeg transcode successful -> {temp_out_name}")
             with open(temp_out_name, 'rb') as f:
                 return f.read(), out_filename
         else:
