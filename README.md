@@ -4,6 +4,7 @@ An ultimate, premium Chrome extension that intercepts Kick.com live stream/VOD p
 
 ![Kick Clipper UI Preview](kick_clipper_real_stream.png)
 ![Kick Clipper Dashboard](kick_clipper_real_dashboard.png)
+![Widescreen to TikTok split-screen demo](kick_clipper_demo.png)
 
 ## Key Features
 
